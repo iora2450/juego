@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Línea de Tiempo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .timeline {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .dropzone {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            min-width: 150px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .event-container {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .event {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 10px;
+            cursor: grab;
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .event.dragging {
+            opacity: 0.5;
+        }
+
+        .timer {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Ordena la Línea de Tiempo</h1>
+    <p>Arrastra y suelta los eventos en el orden correcto.</p>
+
+    <div class="timer">Tiempo: <span id="timer">00:00</span></div>
+
+    <div class="timeline">
+        <!-- Zonas para soltar -->
+        <div class="dropzone" data-year="7-5 a.C.">7-5 a.C.</div>
+        <div class="dropzone" data-year="34-36 d.C.">34-36 d.C.</div>
+        <div class="dropzone" data-year="49 d.C.">49 d.C.</div>
+        <div class="dropzone" data-year="64 d.C.">64 d.C.</div>
+        <div class="dropzone" data-year="66-67 d.C.">66-67 d.C.</div>
+        <div class="dropzone" data-year="70 d.C.">70 d.C.</div>
+        <div class="dropzone" data-year="95 d.C.">95 d.C.</div>
+        <div class="dropzone" data-year="100 d.C.">100 d.C.</div>
+        <div class="dropzone" data-year="250 d.C.">250 d.C.</div>
+        <div class="dropzone" data-year="257-259 d.C.">257-259 d.C.</div>
+        <div class="dropzone" data-year="304-305 d.C.">304-305 d.C.</div>
+        <div class="dropzone" data-year="313 d.C.">313 d.C.</div>
+        <div class="dropzone" data-year="325 d.C.">325 d.C.</div>
+        <div class="dropzone" data-year="330 d.C.">330 d.C.</div>
+        <div class="dropzone" data-year="381 d.C.">381 d.C.</div>
+        <div class="dropzone" data-year="431 d.C.">431 d.C.</div>
+        <div class="dropzone" data-year="451 d.C.">451 d.C.</div>
+        <div class="dropzone" data-year="430 d.C.">430 d.C.</div>
+        <div class="dropzone" data-year="500 d.C.">500 d.C.</div>
+        <div class="dropzone" data-year="553 d.C.">553 d.C.</div>
+        <div class="dropzone" data-year="589 d.C.">589 d.C.</div>
+        <div class="dropzone" data-year="680-681 d.C.">680-681 d.C.</div>
+        <div class="dropzone" data-year="711 d.C.">711 d.C.</div>
+        <div class="dropzone" data-year="787 d.C.">787 d.C.</div>
+        <div class="dropzone" data-year="800 d.C.">800 d.C.</div>
+        <div class="dropzone" data-year="843 d.C.">843 d.C.</div>
+        <div class="dropzone" data-year="1054 d.C.">1054 d.C.</div>
+        <div class="dropzone" data-year="1095 d.C.">1095 d.C.</div>
+        <div class="dropzone" data-year="1123 d.C.">1123 d.C.</div>
+        <div class="dropzone" data-year="1204 d.C.">1204 d.C.</div>
+        <div class="dropzone" data-year="1215 d.C.">1215 d.C.</div>
+        <div class="dropzone" data-year="1274 d.C.">1274 d.C.</div>
+        <div class="dropzone" data-year="1378-1417 d.C.">1378-1417 d.C.</div>
+        <div class="dropzone" data-year="1414-1418 d.C.">1414-1418 d.C.</div>
+        <div class="dropzone" data-year="1453 d.C.">1453 d.C.</div>
+        <div class="dropzone" data-year="1517 d.C.">1517 d.C.</div>
+        <div class="dropzone" data-year="1545-1563 d.C.">1545-1563 d.C.</div>
+        <div class="dropzone" data-year="1869-1870 d.C.">1869-1870 d.C.</div>
+        <div class="dropzone" data-year="1962-1965 d.C.">1962-1965 d.C.</div>
+    </div>
+
+    <div class="event-container" id="events">
+        <!-- Eventos desordenados -->
+        <div class="event" draggable="true" data-year="7-5 a.C.">Nacimiento de Jesucristo</div>
+        <div class="event" draggable="true" data-year="34-36 d.C.">Conversión de San Pablo</div>
+        <div class="event" draggable="true" data-year="49 d.C.">Concilio de Jerusalén</div>
+        <div class="event" draggable="true" data-year="64 d.C.">Incendio de Roma y Persecución de Nerón</div>
+        <div class="event" draggable="true" data-year="66-67 d.C.">Martirio de San Pedro y San Pablo</div>
+        <div class="event" draggable="true" data-year="70 d.C.">Sitio y Toma de Jerusalén por Tito</div>
+        <div class="event" draggable="true" data-year="95 d.C.">Persecución de Domiciano</div>
+        <div class="event" draggable="true" data-year="100 d.C.">Muerte de San Juan en Éfeso</div>
+        <div class="event" draggable="true" data-year="250 d.C.">Persecución de Decio</div>
+        <div class="event" draggable="true" data-year="257-259 d.C.">Persecución de Valeriano</div>
+        <div class="event" draggable="true" data-year="304-305 d.C.">La Gran Persecución de Diocleciano</div>
+        <div class="event" draggable="true" data-year="313 d.C.">Edicto de Milán - Legalización del cristianismo en el Imperio Romano</div>
+        <div class="event" draggable="true" data-year="325 d.C.">Concilio de Nicea - Primer concilio ecuménico, condena del arrianismo</div>
+        <div class="event" draggable="true" data-year="330 d.C.">Fundación de Constantinopla como la nueva capital del Imperio</div>
+        <div class="event" draggable="true" data-year="381 d.C.">Concilio de Constantinopla I - Afirmación del Credo Niceno y condena del arrianismo</div>
+        <div class="event" draggable="true" data-year="431 d.C.">Concilio de Éfeso - Definición de María como la Madre de Dios (Theotokos), condena de Nestorio</div>
+        <div class="event" draggable="true" data-year="451 d.C.">Concilio de Calcedonia - Definición de las dos naturalezas en Cristo, condena del monofisismo</div>
+        <div class="event" draggable="true" data-year="430 d.C.">Muerte de San Agustín</div>
+        <div class="event" draggable="true" data-year="500 d.C.">Conversión de los Francos al cristianismo</div>
+        <div class="event" draggable="true" data-year="553 d.C.">Concilio de Constantinopla II - Condena del origenismo y reafirmación de la doctrina cristiana</div>
+        <div class="event" draggable="true" data-year="589 d.C.">Concilio de Toledo III - Conversión de los visigodos al catolicismo</div>
+        <div class="event" draggable="true" data-year="680-681 d.C.">Concilio de Constantinopla III - Condena del monotelismo y afirmación de las dos voluntades de Cristo</div>
+        <div class="event" draggable="true" data-year="711 d.C.">Conquista musulmana de España</div>
+        <div class="event" draggable="true" data-year="787 d.C.">Concilio de Nicea II - Doctrina sobre el culto a las imágenes</div>
+        <div class="event" draggable="true" data-year="800 d.C.">Coronación de Carlomagno como Emperador del Sacro Imperio Romano</div>
+        <div class="event" draggable="true" data-year="843 d.C.">Tratado de Verdún - División del Imperio Carolingio</div>
+        <div class="event" draggable="true" data-year="1054 d.C.">Cisma de Oriente - Separación de las iglesias oriental y occidental</div>
+        <div class="event" draggable="true" data-year="1095 d.C.">Primera Cruzada - Iniciada por el Papa Urbano II</div>
+        <div class="event" draggable="true" data-year="1123 d.C.">Concilio de Letrán I - Discusión sobre la investidura y el poder eclesiástico</div>
+        <div class="event" draggable="true" data-year="1204 d.C.">Cuarta Cruzada y Toma de Constantinopla por los cruzados</div>
+        <div class="event" draggable="true" data-year="1215 d.C.">Concilio de Letrán IV - Definición de la doctrina de la transubstanciación</div>
+        <div class="event" draggable="true" data-year="1274 d.C.">Concilio de Lyon II - Reconciliación temporal entre las iglesias oriental y occidental</div>
+        <div class="event" draggable="true" data-year="1378-1417 d.C.">Cisma de Occidente - División de la cristiandad entre dos papados</div>
+        <div class="event" draggable="true" data-year="1414-1418 d.C.">Concilio de Constanza - Resolución del Cisma de Occidente</div>
+        <div class="event" draggable="true" data-year="1453 d.C.">Caída de Constantinopla - Fin del Imperio Bizantino</div>
+        <div class="event" draggable="true" data-year="1517 d.C.">Inicio de la Reforma Protestante con las 95 tesis de Martín Lutero</div>
+        <div class="event" draggable="true" data-year="1545-1563 d.C.">Concilio de Trento - Contrarreforma y reafirmación de las doctrinas católicas</div>
+        <div class="event" draggable="true" data-year="1869-1870 d.C.">Concilio Vaticano I - Definición del dogma de la infalibilidad papal</div>
+        <div class="event" draggable="true" data-year="1870 d.C.">Desaparición de los Estados Pontificios y unificación de Italia</div>
+        <div class="event" draggable="true" data-year="1962-1965 d.C.">Concilio Vaticano II - Modernización de la Iglesia Católica y apertura hacia el ecumenismo</div>
+    </div>
+
+    <script>
+        const events = document.querySelectorAll('.event');
+        const dropzones = document.querySelectorAll('.dropzone');
+        let timerInterval;
+        let startTime;
+
+        // Función para barajar (randomizar) los elementos del contenedor
+        function shuffleEvents() {
+            const eventContainer = document.getElementById('events');
+            for (let i = eventContainer.children.length; i >= 0; i--) {
+                eventContainer.appendChild(eventContainer.children[Math.random() * i | 0]);
+            }
+        }
+
+        // Función para iniciar el cronómetro
+        function startTimer() {
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        // Función para actualizar el cronómetro
+        function updateTimer() {
+            const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsedTime / 60).toString().padStart(2, '0');
+            const seconds = (elapsedTime % 60).toString().padStart(2, '0');
+            document.getElementById('timer').textContent = `${minutes}:${seconds}`;
+        }
+
+        // Función para detener el cronómetro
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        // Función para verificar si todos los eventos están en el lugar correcto
+        function checkCompletion() {
+            let correct = true;
+            dropzones.forEach(zone => {
+                const event = zone.querySelector('.event');
+                if (!event || event.dataset.year !== zone.dataset.year) {
+                    correct = false;
+                }
+            });
+
+            if (correct) {
+                stopTimer();
+                alert(`¡Felicidades! Completaste el juego en ${document.getElementById('timer').textContent}`);
+            }
+        }
+
+        events.forEach(event => {
+            event.addEventListener('dragstart', () => {
+                event.classList.add('dragging');
+            });
+
+            event.addEventListener('dragend', () => {
+                event.classList.remove('dragging');
+            });
+        });
+
+        dropzones.forEach(zone => {
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                const draggingEvent = document.querySelector('.dragging');
+                zone.appendChild(draggingEvent);
+            });
+
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const draggingEvent = document.querySelector('.dragging');
+                if (draggingEvent.dataset.year === zone.dataset.year) {
+                    zone.appendChild(draggingEvent);
+                    checkCompletion();
+                } else {
+                    alert('¡Este evento no pertenece a este año!');
+                }
+            });
+        });
+
+        // Barajar los eventos al cargar la página y empezar el cronómetro
+        window.onload = () => {
+            shuffleEvents();
+            startTimer();
+        };
+    </script>
+
+</body>
+</html>
