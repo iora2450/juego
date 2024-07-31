@@ -198,6 +198,25 @@
             }
         }
 
+        function handleTouchStart(event) {
+            event.target.classList.add('dragging');
+        }
+
+        function handleTouchMove(event) {
+            const touch = event.touches[0];
+            const element = document.elementFromPoint(touch.clientX, touch.clientY);
+            if (element && element.classList.contains('dropzone')) {
+                event.preventDefault();
+                const draggingEvent = document.querySelector('.dragging');
+                element.appendChild(draggingEvent);
+            }
+        }
+
+        function handleTouchEnd(event) {
+            event.target.classList.remove('dragging');
+            checkCompletion();
+        }
+
         events.forEach(event => {
             event.addEventListener('dragstart', () => {
                 event.classList.add('dragging');
@@ -205,7 +224,13 @@
 
             event.addEventListener('dragend', () => {
                 event.classList.remove('dragging');
+                checkCompletion();
             });
+
+            // Eventos táctiles para móviles
+            event.addEventListener('touchstart', handleTouchStart);
+            event.addEventListener('touchmove', handleTouchMove);
+            event.addEventListener('touchend', handleTouchEnd);
         });
 
         dropzones.forEach(zone => {
